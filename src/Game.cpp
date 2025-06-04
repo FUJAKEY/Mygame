@@ -7,7 +7,7 @@ Game::Game()
       m_level(m_world),
       m_listener(&m_player) {
     m_world.SetContactListener(&m_listener);
-    m_level.load("");
+    m_level.load("assets/level.csv");
 }
 
 void Game::run() {
@@ -18,7 +18,7 @@ void Game::run() {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-        m_player.handleInput();
+        m_player.handleInput(window);
         m_world.Step(1.f/60.f, 8, 3);
         m_player.update(1.f/60.f);
         m_level.update(1.f/60.f);

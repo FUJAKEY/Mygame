@@ -6,6 +6,7 @@
 #include <memory>
 #include <box2d/box2d.h>
 #include "FrozenBlock.h"
+#include "PlatformBlock.h"
 
 class Level {
 public:

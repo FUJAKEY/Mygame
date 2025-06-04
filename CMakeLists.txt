@@ -7,6 +7,8 @@ add_library(GameCore
     src/Game.cpp
     src/Player.cpp
     src/FrozenBlock.cpp
+    src/PlatformBlock.cpp
+    src/GrapplingHook.cpp
     src/Level.cpp
     src/GameContactListener.cpp
 )

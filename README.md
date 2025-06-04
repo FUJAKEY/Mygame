@@ -4,6 +4,10 @@ This repository contains a barebones skeleton of a DDNet style 2D platformer. It
 uses **SFML** for rendering and **Box2D** for physics. The layout is organised so
 that the same code base can be compiled on Linux, Windows and Android.
 
+The current demo implements a simple frozen block that can freeze the player and
+a basic grappling hook using a Box2D distance joint. Levels are loaded from a
+CSV text file located in `assets/level.csv`.
+
 ## Directory layout
 
 ```

@@ -4,10 +4,12 @@
 #include <box2d/box2d.h>
 #include <SFML/Graphics.hpp>
 
+#include "GrapplingHook.h"
+
 class Player {
 public:
     Player(b2World& world);
-    void handleInput();
+    void handleInput(const sf::RenderWindow& window);
     void update(float dt);
     void render(sf::RenderTarget& target);
     void respawn();
@@ -19,6 +21,7 @@ private:
     b2Body* m_body;
     sf::Sprite m_sprite;
     bool m_frozen = false;
+    GrapplingHook m_hook;
 };
 
 #endif // PLAYER_H
