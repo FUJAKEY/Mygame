@@ -127,29 +127,54 @@ make -j$(nproc)
 ```
 # Extended script to build Windows and Android in Colab
 ```python
-!apt-get update && apt-get install -y build-essential cmake libsfml-dev libbox2d-dev \
-    mingw-w64 wget unzip openjdk-11-jdk
-!wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
-!unzip -q android-ndk-r25c-linux.zip
+!apt-get update && apt-get install -y build-essential cmake ninja-build git wget unzip \
+    mingw-w64 openjdk-11-jdk
+!wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip -O ndk.zip
+!unzip -q ndk.zip
+!git clone --depth=1 https://github.com/erincatto/box2d.git Box2D
+!git clone --depth=1 https://github.com/SFML/SFML.git SFML
 ```
 ```bash
 %%bash
+set -e
 export ANDROID_NDK_HOME=$PWD/android-ndk-r25c
+
+# Build Box2D for Android
+mkdir -p Box2D/build-android && cd Box2D/build-android
+cmake -G Ninja \
+    -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake \
+    -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-23 \
+    -DBOX2D_BUILD_UNIT_TESTS=OFF -DBOX2D_BUILD_TESTBED=OFF ..
+ninja
+cd ../..
+
+# Build SFML for Android
+mkdir -p SFML/build-android && cd SFML/build-android
+cmake -G Ninja \
+    -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake \
+    -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-23 \
+    -DSFML_BUILD_EXAMPLES=OFF -DBUILD_SHARED_LIBS=OFF \
+    -DCMAKE_INSTALL_PREFIX=$PWD/../android-install ..
+ninja install
+cd ../..
 
 # Build Windows executable
 mkdir -p build/windows && cd build/windows
 cmake -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw-w64/toolchain-x86_64.cmake ../..
-# path may vary by distro; search for toolchain-*.cmake if not present
 make -j$(nproc)
 cd ../..
 
 # Build Android arm64 library and optionally an APK
 mkdir -p build/android && cd build/android
-cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake \
-      -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-23 ../..
-make -j$(nproc)
+cmake -G Ninja \
+    -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake \
+    -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-23 \
+    -DSFML_DIR=$PWD/../../SFML/android-install/lib/cmake/SFML \
+    -DBox2D_DIR=$PWD/../../Box2D/build-android ..
+ninja
 cd ../..
 if [ -f platform/android/gradlew ]; then
     cd platform/android && ./gradlew assembleDebug
+    cd ../..
 fi
 ```
