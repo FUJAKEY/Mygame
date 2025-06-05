@@ -69,7 +69,8 @@ Colab provides a Linux environment where you can run the same commands as above.
 Example setup:
 
 ```python
-!apt-get update && apt-get install -y build-essential cmake libsfml-dev libbox2d-dev
+!apt-get update && apt-get install -y build-essential cmake \
+    libsfml-dev libbox2d-dev
 !mkdir -p build/colab && cd build/colab && cmake ../.. && make -j2
 ```
 
@@ -116,7 +117,8 @@ make -j$(nproc)
 В Colab установите зависимости и соберите проект теми же командами, что и на Linux:
 
 ```python
-!apt-get update && apt-get install -y build-essential cmake libsfml-dev libbox2d-dev
+!apt-get update && apt-get install -y build-essential cmake \
+    libsfml-dev libbox2d-dev
 !mkdir -p build/colab && cd build/colab && cmake ../.. && make -j2
 ```
 # Extended script to build Windows and Android in Colab
@@ -129,6 +131,7 @@ make -j$(nproc)
 !wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
 !unzip -q android-ndk-r25c-linux.zip
 
+# Run the build steps in one shell so ANDROID_NDK_HOME persists
 %%bash
 export ANDROID_NDK_HOME=$PWD/android-ndk-r25c
 
