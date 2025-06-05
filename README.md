@@ -123,29 +123,26 @@ make -j$(nproc)
 ```
 # Extended script to build Windows and Android in Colab
 ```python
-# Install toolchains and dependencies
 !apt-get update && apt-get install -y build-essential cmake libsfml-dev libbox2d-dev \
     mingw-w64 wget unzip openjdk-11-jdk
-
-# Download the Android NDK
 !wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
 !unzip -q android-ndk-r25c-linux.zip
-
-# Run the build steps in one shell so ANDROID_NDK_HOME persists
+```
+```bash
 %%bash
 export ANDROID_NDK_HOME=$PWD/android-ndk-r25c
 
 # Build Windows executable
 mkdir -p build/windows && cd build/windows
 cmake -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw-w64/toolchain-x86_64.cmake ../..
-make -j2
+make -j$(nproc)
 cd ../..
 
 # Build Android arm64 library and optionally an APK
 mkdir -p build/android && cd build/android
 cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake \
       -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-23 ../..
-make -j2
+make -j$(nproc)
 cd ../..
 if [ -f platform/android/gradlew ]; then
     cd platform/android && ./gradlew assembleDebug
