@@ -44,6 +44,7 @@ make -j$(nproc)
    ```bash
    mkdir -p build/windows && cd build/windows
    cmake -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw-w64/toolchain-x86_64.cmake ../..
+   # path may vary by distro; search for toolchain-*.cmake if not present
    make -j$(nproc)
    ```
 3. Copy `GameApp.exe` together with the SFML DLLs from your system to a Windows
@@ -52,6 +53,8 @@ make -j$(nproc)
 ## Building for Android (NDK) on Linux
 
 1. Download the Android NDK and set `ANDROID_NDK_HOME` to its path.
+   Add the NDK toolchain to `PATH` so CMake can find `clang`:
+   `export PATH=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH`.
 2. Configure and build with the Android toolchain
    ```bash
    mkdir -p build/android && cd build/android
@@ -95,6 +98,7 @@ or Android, and even build inside Google Colab.
 sudo apt-get install mingw-w64
 mkdir -p build/windows && cd build/windows
 cmake -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw-w64/toolchain-x86_64.cmake ../..
+# path may vary by distro; search for toolchain-*.cmake if not present
 make -j$(nproc)
 ```
 
@@ -135,6 +139,7 @@ export ANDROID_NDK_HOME=$PWD/android-ndk-r25c
 # Build Windows executable
 mkdir -p build/windows && cd build/windows
 cmake -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw-w64/toolchain-x86_64.cmake ../..
+# path may vary by distro; search for toolchain-*.cmake if not present
 make -j$(nproc)
 cd ../..
 
